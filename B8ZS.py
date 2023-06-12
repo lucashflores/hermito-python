@@ -3,21 +3,35 @@ import re
 
 class B8ZS:
     @classmethod
-    def execute(self, text: str) -> str:
-        binary = self._convert_to_binary(text)
-        print(f"BINARY\n {binary}\n\n")
-        ami = self._convert_to_ami(binary)
-        print(f"AMI\n {ami}\n\n")
-        b8zs = self._execute_b8zs(ami)
-        print(f"b8zs\n {b8zs}\n")
+    def encode(self, text: str) -> str:
+        binary = self._encode_to_binary(text)
+        ami = self._encode_to_ami(binary)
+        return self._encode_b8zs(ami)
 
-        return b8zs
+    @classmethod
+    def decode(self, text: str) -> str:
+        ami = self._decode_b8zs(text)
+        binary = self._decode_ami(ami)
+        return self._decode_binary(binary)
 
-    def _convert_to_binary(text: str) -> str:
+    def _decode_b8zs(text: str) -> str:
+        decoded = text.replace("000+-0-+", "00000000")
+        return decoded.replace("000-+0+-", "00000000")
+
+    def _decode_ami(text: str) -> str:
+        decoded = text.replace("+", "1")
+        return decoded.replace("-", "1")
+
+    def _decode_binary(text: str) -> str:
+        binary_chunks = [text[i : i + 8] for i in range(0, len(text), 8)]
+        characters = [chr(int(chunk, 2)) for chunk in binary_chunks]
+        return "".join(characters)
+
+    def _encode_to_binary(text: str) -> str:
         binaries = [bin(ord(char))[2:].zfill(8) for char in text]
         return "".join(binaries)
 
-    def _convert_to_ami(text: str) -> str:
+    def _encode_to_ami(text: str) -> str:
         result = ""
 
         flag = True
@@ -31,7 +45,7 @@ class B8ZS:
 
         return result
 
-    def _execute_b8zs(text: str) -> str:
+    def _encode_b8zs(text: str) -> str:
         pattern = r"(?=0{8})"
         matches = re.finditer(pattern, text)
         indices = [match.start() for match in matches]
@@ -41,12 +55,9 @@ class B8ZS:
             if i < next:
                 continue
             if i == 0 or text[i - 1] == "+":
-                b8zs[i: i + 8] = "000+-0-+"
+                b8zs[i : i + 8] = "000+-0-+"
             else:
-                b8zs[i: i + 8] = "000-+0+-"
+                b8zs[i : i + 8] = "000-+0+-"
             next = i + 8
 
         return "".join(b8zs)
-
-
-B8ZS.execute("Bom dia meu guri véio bora come farinha!!")
