@@ -1,5 +1,6 @@
 from tkinter import *
 from host_interface import HostInterface
+from client_interface import ClientInterface
 
 
 class MainScreen(Tk):
@@ -15,7 +16,7 @@ class MainScreen(Tk):
                bd="2.5p", command=self.start_as_host).grid(row=1, column=0, padx=25)
 
     def start_as_client(self):
-        return False
+        ClientInterface(self)
 
     def start_as_host(self):
-        host_screen = HostInterface(self)
+        HostInterface(self)
