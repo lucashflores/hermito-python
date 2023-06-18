@@ -11,6 +11,7 @@ class HostInterface (Toplevel):
     host_ip_field: Entry
     host_ip: StringVar
     status_field: Entry
+    data: list[str]
 
     def __init__(self, root):
         super().__init__(root)
@@ -47,6 +48,9 @@ class HostInterface (Toplevel):
             self, textvariable=self.status, width=20, font=('calibre', 8, 'normal'))
         self.status_field.grid(row=4, column=0, padx=70)
         self.status_field.config({"background": "Red"})
+
+    def update(self):
+        self.data = self.server.data
 
     def get_host_ip(self):
         self.host_ip.set(self.server.get_host())
