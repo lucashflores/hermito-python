@@ -6,7 +6,7 @@ class B8ZS:
     def encode(self, text: str) -> str:
         binary = self._encode_to_binary(text)
         ami = self._encode_to_ami(binary)
-        return self._encode_b8zs(ami)
+        return (self._encode_b8zs(ami), binary)
 
     @classmethod
     def decode(self, text: str) -> str:

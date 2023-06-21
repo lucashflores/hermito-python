@@ -15,6 +15,7 @@ class ClientInterface(Toplevel):
         self.connect_input = StringVar()
         self.message = StringVar()
         self.encrypted_message = StringVar()
+        self.binary_message = StringVar()
         self.b8zs_message = StringVar()
 
         self.grid_columnconfigure(0, weight=1)
@@ -66,14 +67,14 @@ class ClientInterface(Toplevel):
         self.binary_message_label = Label(self, text="Mensagem Binária: ", font=("arial", 12))
         self.binary_message_label.grid(column=0, row=8, sticky="W", padx=20)
 
-        self.binary_message_text = Text(self, height=5, width=160, font=("arial", 10))
+        self.binary_message_text = Text(self, height=1, width=160, font=("arial", 10))
         self.binary_message_text.grid(column=0, row=9, sticky="W", padx=20)
-        #self.binary_message_text.insert(END, self.binary_message.get()) ???????
+        self.binary_message_text.insert(END, self.binary_message.get())
 
         self.b8zs_message_label = Label(self, text="B8ZS: ", font=("arial", 12))
         self.b8zs_message_label.grid(column=0, row=10, sticky="W", padx=20)
 
-        self.b8zs_message_text = Text(self, height=5, width=160, font=("arial", 10))
+        self.b8zs_message_text = Text(self, height=1, width=160, font=("arial", 10))
         self.b8zs_message_text.grid(column=0, row=11, sticky="W", padx=20)
         self.b8zs_message_text.insert(END, self.b8zs_message.get())
 
@@ -86,7 +87,7 @@ class ClientInterface(Toplevel):
             bd="2.5p",
             command=self.send_message,
         )
-        self.button_message.grid(row=12, column=0, sticky="WE", padx=20, pady=(0, 10))
+        self.button_message.grid(row=13, column=0, sticky="WE", padx=20, pady=(0, 10))
 
     def start_client(self):
         self.client.start_client(self.connect_input.get())
@@ -103,23 +104,27 @@ class ClientInterface(Toplevel):
         self.encrypted_message_text.delete("1.0", END)
         self.encrypted_message_text.insert(END, self.encrypted_message.get())
 
-        binary = B8ZS.encode(self.encrypted_message.get())
+        (b8zs, binary) = B8ZS.encode(self.encrypted_message.get())
 
-        self.b8zs_message.set(binary)
+        self.binary_message.set(binary)
+        self.binary_message_text.delete("1.0", END)
+        self.binary_message_text.insert(END, self.binary_message.get())
+
+        self.b8zs_message.set(b8zs)
         self.b8zs_message_text.delete("1.0", END)
         self.b8zs_message_text.insert(END, self.b8zs_message.get())
 
-        self.plot_graph(binary)
+        self.plot_graph(b8zs)
 
-    def plot_graph(self, binary):
+    def plot_graph(self, b8zs):
         fig, ax = plt.subplots()
         fig.set_figheight(2)
         fig.set_figwidth(30)
 
         mapping = {"0": 0, "+": 1, "-": -1}
 
-        x = [i for i in range(len(binary))]
-        y = [mapping[c] for c in binary]
+        x = [i for i in range(len(b8zs))]
+        y = [mapping[c] for c in b8zs]
 
         ax.step(x, y)
         ax.set_yticks([-1, 0, 1])
@@ -130,5 +135,5 @@ class ClientInterface(Toplevel):
         canvas.draw()
 
         canvas.get_tk_widget().grid(
-            row=11, column=0, sticky="WE", padx=20, pady=(0, 10)
+            row=12, column=0, sticky="WE", padx=20, pady=(5, 10)
         )
