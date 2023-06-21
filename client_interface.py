@@ -9,11 +9,14 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class ClientInterface(Toplevel):
     def __init__(self, root):
         super().__init__(root)
+
         self.client = SocketClient()
+
         self.connect_input = StringVar()
         self.message = StringVar()
         self.encrypted_message = StringVar()
-        self.binary_message = StringVar()
+        self.b8zs_message = StringVar()
+
         self.grid_columnconfigure(0, weight=1)
         self.resizable(False, False)
         self.geometry("1024x600")
@@ -60,12 +63,19 @@ class ClientInterface(Toplevel):
         self.encrypted_message_text.grid(column=0, row=7, sticky="W", padx=20)
         self.encrypted_message_text.insert(END, self.encrypted_message.get())
 
-        self.binary_message_label = Label(self, text="B8ZS: ", font=("arial", 12))
+        self.binary_message_label = Label(self, text="Mensagem Binária: ", font=("arial", 12))
         self.binary_message_label.grid(column=0, row=8, sticky="W", padx=20)
 
         self.binary_message_text = Text(self, height=5, width=160, font=("arial", 10))
         self.binary_message_text.grid(column=0, row=9, sticky="W", padx=20)
-        self.binary_message_text.insert(END, self.binary_message.get())
+        #self.binary_message_text.insert(END, self.binary_message.get()) ???????
+
+        self.b8zs_message_label = Label(self, text="B8ZS: ", font=("arial", 12))
+        self.b8zs_message_label.grid(column=0, row=10, sticky="W", padx=20)
+
+        self.b8zs_message_text = Text(self, height=5, width=160, font=("arial", 10))
+        self.b8zs_message_text.grid(column=0, row=11, sticky="W", padx=20)
+        self.b8zs_message_text.insert(END, self.b8zs_message.get())
 
         self.button_message = Button(
             self,
@@ -76,7 +86,7 @@ class ClientInterface(Toplevel):
             bd="2.5p",
             command=self.send_message,
         )
-        self.button_message.grid(row=10, column=0, sticky="WE", padx=20, pady=(0, 10))
+        self.button_message.grid(row=12, column=0, sticky="WE", padx=20, pady=(0, 10))
 
     def start_client(self):
         self.client.start_client(self.connect_input.get())
@@ -95,9 +105,9 @@ class ClientInterface(Toplevel):
 
         binary = B8ZS.encode(self.encrypted_message.get())
 
-        self.binary_message.set(binary)
-        self.binary_message_text.delete("1.0", END)
-        self.binary_message_text.insert(END, self.binary_message.get())
+        self.b8zs_message.set(binary)
+        self.b8zs_message_text.delete("1.0", END)
+        self.b8zs_message_text.insert(END, self.b8zs_message.get())
 
         self.plot_graph(binary)
 
