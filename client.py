@@ -1,10 +1,11 @@
 from socket import *
 from B8ZS import B8ZS
 from VigenereCipher import VigenereCipher
+
 PORT = 8080
 
 
-class SocketClient ():
+class SocketClient:
     client: socket
 
     def __init__(self) -> None:
@@ -13,9 +14,9 @@ class SocketClient ():
     def start_client(self, host):
         self.client.connect((host, PORT))
 
-    def send_message(self, message):
-        encrypted_message = VigenereCipher.encrypt(message)
-        self.client.send(B8ZS.encode(encrypted_message))
+    def send_message(self, message: str, key: str):
+        encrypted_message = VigenereCipher.encrypt(message, key)
+        self.client.send(B8ZS.encode(encrypted_message).encode())
 
     def stop_client(self):
         self.client.close()

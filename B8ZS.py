@@ -5,6 +5,7 @@ class B8ZS:
     @classmethod
     def encode(self, text: str) -> str:
         binary = self._encode_to_binary(text)
+        print(len(binary))
         ami = self._encode_to_ami(binary)
         return self._encode_b8zs(ami)
 
@@ -12,6 +13,7 @@ class B8ZS:
     def decode(self, text: str) -> str:
         ami = self._decode_b8zs(text)
         binary = self._decode_ami(ami)
+        print(binary)
         return self._decode_binary(binary)
 
     def _decode_b8zs(text: str) -> str:
@@ -29,6 +31,7 @@ class B8ZS:
 
     def _encode_to_binary(text: str) -> str:
         binaries = [bin(ord(char))[2:].zfill(8) for char in text]
+        print(binaries)
         return "".join(binaries)
 
     def _encode_to_ami(text: str) -> str:
@@ -61,3 +64,6 @@ class B8ZS:
             next = i + 8
 
         return "".join(b8zs)
+
+
+print(B8ZS.decode("+-0+-0+-0+0-0+0000-+0-00+-+-000+0000-"))

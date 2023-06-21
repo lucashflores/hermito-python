@@ -6,14 +6,15 @@ from VigenereCipher import VigenereCipher
 PORT = 8080
 
 
-class SocketServer():
+class SocketServer:
     host: str
     server: socket
     thread: Thread
     data: list[str]
 
-    def __init__(self) -> None:
+    def __init__(self, callback) -> None:
         self.host = gethostbyname(gethostname())
+        self.callback = callback
 
     def get_host(self):
         return self.host
@@ -33,9 +34,17 @@ class SocketServer():
     def handleConnection(self):
         conn, address = self.server.accept()  # accept new connection
         print("Connection from: " + str(address))
+        key = "h189G%@A8AWFfbwahg!#"
+
         while True:
             message = conn.recv(2048).decode()
-            print("from connected user: " + str(message))
             if message:
-                print(f"[{address}] {message}")
-                self.data = message
+                print(message)
+                encrypted = B8ZS.decode(message)
+                print(encrypted)
+                text = VigenereCipher.decrypt(encrypted, key)
+                print(
+                    f"[{address}]\nbinary={message}\nencrypted={encrypted}\ntext=\n{text}\n\n"
+                )
+                self.data = f"[{address}] {message}"
+                self.callback()
