@@ -33,7 +33,6 @@ class B8ZS:
 
     def _encode_to_ami(text: str) -> str:
         result = ""
-
         flag = True
 
         for char in text:

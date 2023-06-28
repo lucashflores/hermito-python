@@ -1,6 +1,5 @@
 import math
 
-
 class VigenereCipher:
     @classmethod
     def encrypt(self, text: str, key: str) -> str:

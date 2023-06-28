@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class HostInterface(Toplevel):
     server: SocketServer
+    
     start_button: Button
     stop_button: Button
     status_field: Entry

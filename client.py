@@ -4,7 +4,6 @@ from VigenereCipher import VigenereCipher
 
 PORT = 8080
 
-
 class SocketClient:
     client: socket
 

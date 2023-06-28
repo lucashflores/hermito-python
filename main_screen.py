@@ -2,7 +2,6 @@ from tkinter import *
 from host_interface import HostInterface
 from client_interface import ClientInterface
 
-
 class MainScreen(Tk):
     def __init__(self):
         super().__init__()
@@ -10,6 +9,7 @@ class MainScreen(Tk):
         self.resizable(False, False)
         self.geometry("250x150")
         self.title("Main")
+
         Button(self, anchor="center", width=20, text="Client", font=('calibre', 8, 'normal'),
                bd="2.5p", command=self.start_as_client).grid(row=0, column=0, padx=25, pady=25)
         Button(self, anchor="center", width=20, text="Host", font=('calibre', 8, 'normal'),

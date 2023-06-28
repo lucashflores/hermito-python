@@ -5,7 +5,6 @@ from VigenereCipher import VigenereCipher
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
 class ClientInterface(Toplevel):
     def __init__(self, root):
         super().__init__(root)
