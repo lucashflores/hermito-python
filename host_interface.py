@@ -1,6 +1,8 @@
 from tkinter import *
 from host import SocketServer
 
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class HostInterface(Toplevel):
     server: SocketServer
@@ -15,7 +17,7 @@ class HostInterface(Toplevel):
     def __init__(self, root):
         super().__init__(root)
         root.eval(f"tk::PlaceWindow {str(self)} center")
-        self.grab_set()
+        #self.grab_set()
         self.title("Host")
 
         self.server = SocketServer(callback=self.update)
@@ -26,6 +28,7 @@ class HostInterface(Toplevel):
         self.message = StringVar()
         self.encrypted_message = StringVar()
         self.binary_message = StringVar()
+        self.b8zs_message = StringVar()
 
         self.status.set("Stopped")
         self.grid_columnconfigure(0, weight=1)
@@ -96,53 +99,79 @@ class HostInterface(Toplevel):
             self, textvariable=self.message, font=("arial", 8, "normal")
         )
         self.received_message_text.grid(
-            row=5, column=0, sticky="WE", padx=20, pady=(0, 10)
+            row=5, column=0, columnspan=4, sticky="WE", padx=20, pady=(0, 10)
         )
         self.received_message_text.config(state="readonly")
 
 
         # encrypted message display ------------
-        self.label_message = Label(self, text="Mensagem Encriptada", font=("arial", 12))
-        self.label_message.grid(column=0, row=6, sticky="W", padx=20)
+        self.encripted_label_message = Label(self, text="Mensagem Encriptada", font=("arial", 12))
+        self.encripted_label_message.grid(column=0, row=6, sticky="W", padx=20)
 
-        self.received_message_text = Entry(
+        self.encripted_message_text = Entry(
             self, textvariable=self.encrypted_message, font=("arial", 8, "normal")
         )
-        self.received_message_text.grid(
-            row=7, column=0, sticky="WE", padx=20, pady=(0, 10)
+        self.encripted_message_text.grid(
+            row=7, column=0, columnspan=4, sticky="WE", padx=20, pady=(0, 10)
         )
-        self.received_message_text.config(state="readonly")
+        self.encripted_message_text.config(state="readonly")
 
         # binary message display ------------
-        self.label_message = Label(self, text="Mensagem Binária", font=("arial", 12))
-        self.label_message.grid(column=0, row=8, sticky="W", padx=20)
+        self.binary_label_message = Label(self, text="Mensagem Binária", font=("arial", 12))
+        self.binary_label_message.grid(column=0, row=8, sticky="W", padx=20)
 
-        self.received_message_text = Entry(
-            self, textvariable=self.encrypted_message, font=("arial", 8, "normal")
+        self.binary_message_text = Entry(
+            self, textvariable=self.binary_message, font=("arial", 8, "normal")
         )
-        self.received_message_text.grid(
-            row=9, column=0, sticky="WE", padx=20, pady=(0, 10)
+        self.binary_message_text.grid(
+            row=9, column=0, columnspan=4, sticky="WE", padx=20, pady=(0, 10)
         )
-        self.received_message_text.config(state="readonly")
+        self.binary_message_text.config(state="readonly")
 
         # b8zs message display ------------
-        self.label_message = Label(self, text="B8zs", font=("arial", 12))
-        self.label_message.grid(column=0, row=10, sticky="W", padx=20)
+        self.b8zs_label_message = Label(self, text="B8zs", font=("arial", 12))
+        self.b8zs_label_message.grid(column=0, row=10, columnspan=4, sticky="W", padx=20)
 
-        self.received_message_text = Entry(
-            self, textvariable=self.encrypted_message, font=("arial", 8, "normal")
+        self.b8zs_message_text = Entry(
+            self, textvariable=self.b8zs_message, font=("arial", 8, "normal")
         )
-        self.received_message_text.grid(
-            row=11, column=0, sticky="WE", padx=20, pady=(0, 10)
+        self.b8zs_message_text.grid(
+            row=11, column=0, columnspan = 4, sticky="WE", padx=20, pady=(0, 10)
         )
-        self.received_message_text.config(state="readonly")
+        self.b8zs_message_text.config(state="readonly")
 
 
         #self.received_messages = Text(self, height=5, width=160, font=("arial", 10))
         #self.received_messages.grid(column=0, row=5, sticky="W", padx=20)
 
     def update(self):
-        self.received_messages.insert(END, self.server.data)
+        self.message.set(self.server.text) 
+        self.encrypted_message.set(self.server.encrypted)
+        self.binary_message.set(self.server.binary)
+        self.b8zs_message.set(self.server.message)
+        self.plot_graph(self.server.message)
+
+    def plot_graph(self, b8zs):
+        fig, ax = plt.subplots()
+        fig.set_figheight(2)
+        fig.set_figwidth(60)
+
+        mapping = {"0": 0, "+": 1, "-": -1}
+
+        x = [i for i in range(len(b8zs))]
+        y = [mapping[c] for c in b8zs]
+
+        ax.step(x, y)
+        ax.set_yticks([-1, 0, 1])
+        ax.set_xlabel("Bit")
+        ax.set_title("B8ZS Plot")
+
+        canvas = FigureCanvasTkAgg(fig, master=self)
+        canvas.draw()
+
+        canvas.get_tk_widget().grid(
+            row=12, column=0, columnspan=4, sticky="WE", padx=20, pady=(5, 10)
+        )
 
     def get_host_ip(self):
         self.host_ip.set(self.server.get_host())

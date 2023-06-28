@@ -16,7 +16,7 @@ class SocketClient:
 
     def send_message(self, message: str, key: str):
         encrypted_message = VigenereCipher.encrypt(message, key)
-        self.client.send(B8ZS.encode(encrypted_message).encode())
+        self.client.send(B8ZS.encode(encrypted_message)[0].encode())
 
     def stop_client(self):
         self.client.close()

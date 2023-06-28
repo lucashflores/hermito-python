@@ -12,9 +12,16 @@ class SocketServer:
     thread: Thread
     data: list[str]
 
+    
+
     def __init__(self, callback) -> None:
         self.host = gethostbyname(gethostname())
         self.callback = callback
+
+        self.text = ""
+        self.message = ""
+        self.binary = ""
+        self.encrypted = ""
 
     def get_host(self):
         return self.host
@@ -37,14 +44,14 @@ class SocketServer:
         key = "h189G%@A8AWFfbwahg!#"
 
         while True:
-            message = conn.recv(2048).decode()
-            if message:
-                print(message)
-                encrypted = B8ZS.decode(message)
-                print(encrypted)
-                text = VigenereCipher.decrypt(encrypted, key)
+            self.message = conn.recv(2048).decode()
+            if self.message:
+                print(self.message)
+                (self.encrypted, self.binary) = B8ZS.decode(self.message)
+                print(self.encrypted)
+                self.text = VigenereCipher.decrypt(self.encrypted, key)
                 print(
-                    f"[{address}]\nbinary={message}\nencrypted={encrypted}\ntext=\n{text}\n\n"
+                    f"[{address}]\nb8zs = {self.message} \nbinary = {self.binary} \nencrypted = {self.encrypted}\ntext = {self.text}\n\n"
                 )
-                self.data = f"[{address}] {message}"
+                self.data = f"[{address}] {self.message}"
                 self.callback()

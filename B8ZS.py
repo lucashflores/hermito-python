@@ -12,7 +12,7 @@ class B8ZS:
     def decode(self, text: str) -> str:
         ami = self._decode_b8zs(text)
         binary = self._decode_ami(ami)
-        return self._decode_binary(binary)
+        return (self._decode_binary(binary), binary)
 
     def _decode_b8zs(text: str) -> str:
         decoded = text.replace("000+-0-+", "00000000")
